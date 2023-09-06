@@ -1,6 +1,8 @@
 package jorge.mombach.mscars.service;
 
 import jorge.mombach.mscars.entity.Car;
+import jorge.mombach.mscars.exception.DuplicateCarException;
+import jorge.mombach.mscars.exception.DuplicatePilotException;
 import jorge.mombach.mscars.payload.CarDtoRequest;
 import jorge.mombach.mscars.payload.CarDtoResponse;
 import jorge.mombach.mscars.repository.CarRepository;
@@ -20,7 +22,27 @@ public class CarService {
     @Autowired
     private ModelMapper modelMapper;
 
+    public boolean isDuplicatePilot(String pilotName, int pilotAge) {
+        return carRepository.existsByPilotNameAndPilotAge(pilotName, pilotAge);
+    }
+
+    public boolean isDuplicateCar(CarDtoRequest carDtoRequest) {
+        return carRepository.existsByBrandAndModelAndYear(
+                carDtoRequest.getBrand(),
+                carDtoRequest.getModel(),
+                carDtoRequest.getYear());
+    }
+
     public CarDtoResponse createCar(CarDtoRequest carDtoRequest) {
+
+        if (isDuplicatePilot(carDtoRequest.getPilot().getName(), carDtoRequest.getPilot().getAge())) {
+            throw new DuplicatePilotException("There's already a pilot with this name and age.");
+        }
+
+        if (isDuplicateCar(carDtoRequest)) {
+            throw new DuplicateCarException("There's an identical car registered already.");
+        }
+
         Car car = modelMapper.map(carDtoRequest, Car.class);
         Car savedCar = carRepository.save(car);
         return modelMapper.map(savedCar, CarDtoResponse.class);
