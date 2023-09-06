@@ -1,5 +1,6 @@
 package jorge.mombach.msraces.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,5 +22,6 @@ public class Race {
     private String id;
     private String name;
     private String country;
+    @JsonFormat(pattern = "dd/mm/yyyy")
     private Date date;
 }
