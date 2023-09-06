@@ -1,6 +1,7 @@
 package jorge.mombach.msraces.controller;
 
 import jakarta.validation.Valid;
+import jorge.mombach.msraces.payload.CarDtoResponse;
 import jorge.mombach.msraces.payload.RaceDtoRequest;
 import jorge.mombach.msraces.payload.RaceDtoResponse;
 import jorge.mombach.msraces.service.RaceService;
@@ -19,31 +20,31 @@ public class RaceController {
     RaceService raceService;
 
     @PostMapping
-    public ResponseEntity<RaceDtoResponse> createCar(@Valid @RequestBody RaceDtoRequest raceDtoRequest) {
-        RaceDtoResponse createdCar = raceService.createRace(raceDtoRequest);
-        return new ResponseEntity<>(createdCar, HttpStatus.CREATED);
+    public ResponseEntity<RaceDtoResponse> createRace(@Valid @RequestBody RaceDtoRequest raceDtoRequest) {
+        RaceDtoResponse createdRace = raceService.createRace(raceDtoRequest);
+        return new ResponseEntity<>(createdRace, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public List<RaceDtoResponse> getAllCars(){
+    public List<RaceDtoResponse> getAllRaces(){
         return raceService.getAllRaces();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RaceDtoResponse> getCarById(@PathVariable String id) {
-        RaceDtoResponse car = raceService.getRaceById(id);
-        if (car != null) {
-            return ResponseEntity.ok(car);
+    public ResponseEntity<RaceDtoResponse> getRaceById(@PathVariable String id) {
+        RaceDtoResponse race = raceService.getRaceById(id);
+        if (race != null) {
+            return ResponseEntity.ok(race);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RaceDtoResponse> updateCar(@PathVariable String id, @Valid @RequestBody RaceDtoRequest raceDtoRequest) {
-        RaceDtoResponse updatedCar = raceService.updateRace(id, raceDtoRequest);
-        if (updatedCar != null) {
-            return ResponseEntity.ok(updatedCar);
+    public ResponseEntity<RaceDtoResponse> updateRace(@PathVariable String id, @Valid @RequestBody RaceDtoRequest raceDtoRequest) {
+        RaceDtoResponse updatedRace = raceService.updateRace(id, raceDtoRequest);
+        if (updatedRace != null) {
+            return ResponseEntity.ok(updatedRace);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -57,5 +58,10 @@ public class RaceController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("cars")
+    public List<CarDtoResponse> getAvailableCarsForRace(){
+        return raceService.getAvailableCarsForRace();
     }
 }

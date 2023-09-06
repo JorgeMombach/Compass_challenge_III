@@ -1,6 +1,7 @@
 package jorge.mombach.msraces.service;
 
 import jorge.mombach.msraces.entity.Race;
+import jorge.mombach.msraces.payload.CarDtoResponse;
 import jorge.mombach.msraces.payload.RaceDtoRequest;
 import jorge.mombach.msraces.payload.RaceDtoResponse;
 import jorge.mombach.msraces.repository.RaceRepository;
@@ -19,6 +20,18 @@ public class RaceService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    private final CarServiceClient carServiceClient;
+
+    @Autowired
+    public RaceService(CarServiceClient carServiceClient) {
+        this.carServiceClient = carServiceClient;
+    }
+
+    public List<CarDtoResponse> getAvailableCarsForRace() {
+        List<CarDtoResponse> availableCars = carServiceClient.getAllCars();
+        return availableCars;
+    }
 
     public RaceDtoResponse createRace (RaceDtoRequest raceDtoRequest){
         Race race = modelMapper.map(raceDtoRequest, Race.class);
