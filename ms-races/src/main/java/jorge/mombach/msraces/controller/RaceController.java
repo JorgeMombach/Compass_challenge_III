@@ -60,8 +60,4 @@ public class RaceController {
         }
     }
 
-    @GetMapping("cars")
-    public List<CarDtoResponse> getAvailableCarsForRace(){
-        return raceService.getAvailableCarsForRace();
-    }
 }

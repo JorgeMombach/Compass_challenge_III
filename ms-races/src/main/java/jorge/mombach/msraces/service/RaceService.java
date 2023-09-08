@@ -9,7 +9,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,14 +31,31 @@ public class RaceService {
         this.carServiceClient = carServiceClient;
     }
 
-    public List<CarDtoResponse> getAvailableCarsForRace() {
-        List<CarDtoResponse> availableCars = carServiceClient.getAllCars();
-        return availableCars;
+    public List<CarDtoResponse> getRandomCarsForRace() {
+        List<CarDtoResponse> allCars = carServiceClient.getAllCars();
+
+        Collections.shuffle(allCars);
+
+        Random random = new Random();
+        int numCarsToSelect = random.nextInt(8) + 3;
+
+        List<CarDtoResponse> selectedCars = new ArrayList<>();
+
+        for (int i = 0; i < numCarsToSelect && i < allCars.size(); i++) {
+            CarDtoResponse randomCar = allCars.get(i);
+            selectedCars.add(randomCar);
+        }
+
+        return selectedCars;
     }
 
-    public RaceDtoResponse createRace (RaceDtoRequest raceDtoRequest){
+    public RaceDtoResponse createRace(RaceDtoRequest raceDtoRequest) {
+        List<CarDtoResponse> randomCars = getRandomCarsForRace();
+
         Race race = modelMapper.map(raceDtoRequest, Race.class);
+        race.setCars(randomCars);
         Race savedRace = raceRepository.save(race);
+
         return modelMapper.map(savedRace, RaceDtoResponse.class);
     }
 
@@ -54,13 +74,16 @@ public class RaceService {
         return modelMapper.map(race, RaceDtoResponse.class);
     }
 
-    public RaceDtoResponse updateRace(String id, RaceDtoRequest raceDtoRequest){
+    public RaceDtoResponse updateRace(String id, RaceDtoRequest raceDtoRequest) {
         Race race = raceRepository.findById(id).orElse(null);
-        if (race == null){
+        if (race == null) {
             return null;
         }
 
-        modelMapper.map(raceDtoRequest, race);
+        race.setName(raceDtoRequest.getName());
+        race.setCountry(raceDtoRequest.getCountry());
+        race.setDate(raceDtoRequest.getDate());
+
         Race updatedRace = raceRepository.save(race);
 
         return modelMapper.map(updatedRace, RaceDtoResponse.class);

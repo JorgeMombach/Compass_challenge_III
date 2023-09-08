@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,4 +20,5 @@ public class RaceDtoResponse {
     private String country;
     @JsonFormat(pattern = "dd/mm/yyyy")
     private Date date;
+    private List<CarDtoResponse> cars;
 }
