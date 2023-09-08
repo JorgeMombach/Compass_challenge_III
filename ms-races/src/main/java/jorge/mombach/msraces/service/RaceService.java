@@ -93,4 +93,46 @@ public class RaceService {
         raceRepository.deleteById(id);
         return "Race deleted.";
     }
+
+    public List<CarDtoResponse> getGrid(String raceId) {
+        Race race = raceRepository.findById(raceId).orElse(null);
+        if (race == null) {
+            return null;
+        }
+
+        return race.getCars();
+    }
+
+    public RaceDtoResponse overtake(String raceId, String carId) {
+        Race race = raceRepository.findById(raceId).orElse(null);
+
+        if (race == null) {
+            return null;
+        }
+
+        List<CarDtoResponse> cars = race.getCars();
+        int carIndex = -1;
+
+        for (int i = 0; i < cars.size(); i++) {
+            if (cars.get(i).getId().equals(carId)) {
+                carIndex = i;
+                break;
+            }
+        }
+
+        if (carIndex == -1) {
+            return null;
+        }
+
+        if (carIndex > 0) {
+            CarDtoResponse currentCar = cars.get(carIndex);
+            CarDtoResponse carInFront = cars.get(carIndex - 1);
+            cars.set(carIndex, carInFront);
+            cars.set(carIndex - 1, currentCar);
+        }
+
+        raceRepository.save(race);
+
+        return modelMapper.map(race, RaceDtoResponse.class);
+    }
 }

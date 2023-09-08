@@ -60,4 +60,23 @@ public class RaceController {
         }
     }
 
+    @GetMapping("/{raceId}/grid")
+    public ResponseEntity<List<CarDtoResponse>> getGrid(@PathVariable String raceId) {
+        List<CarDtoResponse> grid = raceService.getGrid(raceId);
+        if (grid != null) {
+            return ResponseEntity.ok(grid);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/{raceId}/overtake/{carId}")
+    public ResponseEntity<RaceDtoResponse> overtake(@PathVariable String raceId, @PathVariable String carId) {
+        RaceDtoResponse updatedRace = raceService.overtake(raceId, carId);
+        if (updatedRace != null) {
+            return ResponseEntity.ok(updatedRace);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
