@@ -4,6 +4,7 @@ import jorge.mombach.msraces.entity.Race;
 import jorge.mombach.msraces.payload.CarDtoResponse;
 import jorge.mombach.msraces.payload.RaceDtoRequest;
 import jorge.mombach.msraces.payload.RaceDtoResponse;
+import jorge.mombach.msraces.payload.RaceInfoDto;
 import jorge.mombach.msraces.repository.RaceRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,10 +60,10 @@ public class RaceService {
         return modelMapper.map(savedRace, RaceDtoResponse.class);
     }
 
-    public List<RaceDtoResponse> getAllRaces(){
+    public List<RaceInfoDto> getAllRaces(){
         List<Race> races = raceRepository.findAll();
         return races.stream()
-                .map(car -> modelMapper.map(car, RaceDtoResponse.class))
+                .map(car -> modelMapper.map(car, RaceInfoDto.class))
                 .collect(Collectors.toList());
     }
 
@@ -74,7 +75,7 @@ public class RaceService {
         return modelMapper.map(race, RaceDtoResponse.class);
     }
 
-    public RaceDtoResponse updateRace(String id, RaceDtoRequest raceDtoRequest) {
+    public RaceInfoDto updateRace(String id, RaceDtoRequest raceDtoRequest) {
         Race race = raceRepository.findById(id).orElse(null);
         if (race == null) {
             return null;
@@ -86,21 +87,12 @@ public class RaceService {
 
         Race updatedRace = raceRepository.save(race);
 
-        return modelMapper.map(updatedRace, RaceDtoResponse.class);
+        return modelMapper.map(updatedRace, RaceInfoDto.class);
     }
 
     public String deleteRace (String id){
         raceRepository.deleteById(id);
         return "Race deleted.";
-    }
-
-    public List<CarDtoResponse> getGrid(String raceId) {
-        Race race = raceRepository.findById(raceId).orElse(null);
-        if (race == null) {
-            return null;
-        }
-
-        return race.getCars();
     }
 
     public RaceDtoResponse overtake(String raceId, String carId) {
@@ -131,8 +123,19 @@ public class RaceService {
             cars.set(carIndex - 1, currentCar);
         }
 
+        race.setFinalResult(new ArrayList<>(cars));
+
         raceRepository.save(race);
 
         return modelMapper.map(race, RaceDtoResponse.class);
     }
+
+    public List<CarDtoResponse> getRaceResult(String raceId) {
+        Race race = raceRepository.findById(raceId).orElse(null);
+        if (race == null || race.getFinalResult() == null) {
+            return null;
+        }
+        return race.getFinalResult();
+    }
+
 }

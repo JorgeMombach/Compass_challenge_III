@@ -27,4 +27,5 @@ public class Race {
     @JsonFormat(pattern = "dd/mm/yyyy")
     private Date date;
     private List<CarDtoResponse> cars;
+    private List<CarDtoResponse> finalResult;
 }
