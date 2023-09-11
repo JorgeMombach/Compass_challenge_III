@@ -55,6 +55,8 @@ public class RaceService {
 
         Race race = modelMapper.map(raceDtoRequest, Race.class);
         race.setCars(randomCars);
+        race.setStatus("started");
+
         Race savedRace = raceRepository.save(race);
 
         return modelMapper.map(savedRace, RaceDtoResponse.class);
@@ -81,6 +83,10 @@ public class RaceService {
             return null;
         }
 
+        if ("finished".equals(race.getStatus())) {
+            return null;
+        }
+
         race.setName(raceDtoRequest.getName());
         race.setCountry(raceDtoRequest.getCountry());
         race.setDate(raceDtoRequest.getDate());
@@ -99,6 +105,10 @@ public class RaceService {
         Race race = raceRepository.findById(raceId).orElse(null);
 
         if (race == null) {
+            return null;
+        }
+
+        if ("finished".equals(race.getStatus())) {
             return null;
         }
 
@@ -123,19 +133,36 @@ public class RaceService {
             cars.set(carIndex - 1, currentCar);
         }
 
-        race.setFinalResult(new ArrayList<>(cars));
+        race.setCars(new ArrayList<>(cars));
 
         raceRepository.save(race);
 
         return modelMapper.map(race, RaceDtoResponse.class);
     }
 
-    public List<CarDtoResponse> getRaceResult(String raceId) {
+    public RaceDtoResponse finishRace(String raceId) {
         Race race = raceRepository.findById(raceId).orElse(null);
-        if (race == null || race.getFinalResult() == null) {
+
+        if (race == null) {
             return null;
         }
-        return race.getFinalResult();
+
+        if ("finished".equals(race.getStatus())) {
+            return modelMapper.map(race, RaceDtoResponse.class);
+        }
+
+        race.setStatus("finished");
+        Race finishedRace = raceRepository.save(race);
+
+        return modelMapper.map(finishedRace, RaceDtoResponse.class);
+    }
+
+    public List<CarDtoResponse> getRaceResult(String raceId) {
+        Race race = raceRepository.findById(raceId).orElse(null);
+        if (race == null || race.getCars() == null) {
+            return null;
+        }
+        return race.getCars();
     }
 
 }

@@ -20,5 +20,6 @@ public class RaceDtoResponse {
     private String country;
     @JsonFormat(pattern = "dd/mm/yyyy")
     private Date date;
+    private String status;
     private List<CarDtoResponse> cars;
 }

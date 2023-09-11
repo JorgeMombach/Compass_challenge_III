@@ -71,6 +71,16 @@ public class RaceController {
         }
     }
 
+    @PutMapping("/{raceId}/finish")
+    public ResponseEntity<RaceDtoResponse> finishRace(@PathVariable String raceId) {
+        RaceDtoResponse finishedRace = raceService.finishRace(raceId);
+        if (finishedRace != null) {
+            return ResponseEntity.ok(finishedRace);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @GetMapping("/{raceId}/result")
     public ResponseEntity<List<CarDtoResponse>> getRaceResult(@PathVariable String raceId) {
         List<CarDtoResponse> raceResult = raceService.getRaceResult(raceId);
