@@ -18,4 +18,5 @@ public class RaceInfoDto {
     private String country;
     @JsonFormat(pattern = "dd/MM/yyyy")
     private Date date;
+    private String status;
 }
