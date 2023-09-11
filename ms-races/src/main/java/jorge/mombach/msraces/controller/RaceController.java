@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import jorge.mombach.msraces.payload.CarDtoResponse;
 import jorge.mombach.msraces.payload.RaceDtoRequest;
 import jorge.mombach.msraces.payload.RaceDtoResponse;
+import jorge.mombach.msraces.payload.RaceInfoDto;
 import jorge.mombach.msraces.service.RaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ public class RaceController {
     }
 
     @GetMapping
-    public List<RaceDtoResponse> getAllRaces(){
+    public List<RaceInfoDto> getAllRaces(){
         return raceService.getAllRaces();
     }
 
@@ -41,8 +42,8 @@ public class RaceController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RaceDtoResponse> updateRace(@PathVariable String id, @Valid @RequestBody RaceDtoRequest raceDtoRequest) {
-        RaceDtoResponse updatedRace = raceService.updateRace(id, raceDtoRequest);
+    public ResponseEntity<RaceInfoDto> updateRace(@PathVariable String id, @Valid @RequestBody RaceDtoRequest raceDtoRequest) {
+        RaceInfoDto updatedRace = raceService.updateRace(id, raceDtoRequest);
         if (updatedRace != null) {
             return ResponseEntity.ok(updatedRace);
         } else {
@@ -60,8 +61,24 @@ public class RaceController {
         }
     }
 
-    @GetMapping("cars")
-    public List<CarDtoResponse> getAvailableCarsForRace(){
-        return raceService.getAvailableCarsForRace();
+    @PutMapping("/{raceId}/overtake/{carId}")
+    public ResponseEntity<RaceDtoResponse> overtake(@PathVariable String raceId, @PathVariable String carId) {
+        RaceDtoResponse updatedRace = raceService.overtake(raceId, carId);
+        if (updatedRace != null) {
+            return ResponseEntity.ok(updatedRace);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
+
+    @GetMapping("/{raceId}/result")
+    public ResponseEntity<List<CarDtoResponse>> getRaceResult(@PathVariable String raceId) {
+        List<CarDtoResponse> raceResult = raceService.getRaceResult(raceId);
+        if (raceResult != null) {
+            return ResponseEntity.ok(raceResult);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

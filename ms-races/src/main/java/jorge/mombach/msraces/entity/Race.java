@@ -1,6 +1,7 @@
 package jorge.mombach.msraces.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jorge.mombach.msraces.payload.CarDtoResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -24,4 +26,6 @@ public class Race {
     private String country;
     @JsonFormat(pattern = "dd/mm/yyyy")
     private Date date;
+    private List<CarDtoResponse> cars;
+    private List<CarDtoResponse> finalResult;
 }

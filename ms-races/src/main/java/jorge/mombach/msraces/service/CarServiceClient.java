@@ -12,3 +12,5 @@ public interface CarServiceClient {
     @GetMapping("/api/car")
     public List<CarDtoResponse> getAllCars();
 }
+
+
