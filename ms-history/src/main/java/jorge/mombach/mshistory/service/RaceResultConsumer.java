@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +29,8 @@ public class RaceResultConsumer {
             ObjectMapper objectMapper = new ObjectMapper();
             RaceResult raceResult = objectMapper.readValue(raceResultJson, RaceResult.class);
 
+            raceResult.setDateOfInsertion(new Date());
+
             raceResultRepository.save(raceResult);
 
         } catch (IOException e) {
@@ -40,5 +43,13 @@ public class RaceResultConsumer {
         return races.stream()
                 .map(car -> modelMapper.map(car, RaceResultDto.class))
                 .collect(Collectors.toList());
+    }
+
+    public RaceResultDto getRaceById(String id){
+        RaceResult race = raceResultRepository.findById(id).orElse(null);
+        if (race == null){
+            return null;
+        }
+        return modelMapper.map(race, RaceResultDto.class);
     }
 }

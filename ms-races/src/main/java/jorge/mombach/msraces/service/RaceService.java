@@ -81,30 +81,6 @@ public class RaceService {
         return modelMapper.map(race, RaceDtoResponse.class);
     }
 
-    public RaceInfoDto updateRace(String id, RaceDtoRequest raceDtoRequest) {
-        Race race = raceRepository.findById(id).orElse(null);
-        if (race == null) {
-            return null;
-        }
-
-        if ("finished".equals(race.getStatus())) {
-            return null;
-        }
-
-        race.setName(raceDtoRequest.getName());
-        race.setCountry(raceDtoRequest.getCountry());
-        race.setDate(raceDtoRequest.getDate());
-
-        Race updatedRace = raceRepository.save(race);
-
-        return modelMapper.map(updatedRace, RaceInfoDto.class);
-    }
-
-    public String deleteRace (String id){
-        raceRepository.deleteById(id);
-        return "Race deleted.";
-    }
-
     public RaceDtoResponse overtake(String raceId, String carId) {
         Race race = raceRepository.findById(raceId).orElse(null);
 
@@ -162,14 +138,6 @@ public class RaceService {
         rabbitTemplate.convertAndSend("race-result-queue", raceJson);
 
         return modelMapper.map(finishedRace, RaceDtoResponse.class);
-    }
-
-    public List<CarDtoResponse> getRaceResult(String raceId) {
-        Race race = raceRepository.findById(raceId).orElse(null);
-        if (race == null || race.getCars() == null) {
-            return null;
-        }
-        return race.getCars();
     }
 
     public String convertRaceToJson(Race race) {
