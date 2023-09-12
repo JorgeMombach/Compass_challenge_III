@@ -1,5 +1,6 @@
 package jorge.mombach.msraces.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jorge.mombach.msraces.entity.Race;
 import jorge.mombach.msraces.payload.CarDtoResponse;
 import jorge.mombach.msraces.payload.RaceDtoRequest;
@@ -7,6 +8,7 @@ import jorge.mombach.msraces.payload.RaceDtoResponse;
 import jorge.mombach.msraces.payload.RaceInfoDto;
 import jorge.mombach.msraces.repository.RaceRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,10 +27,12 @@ public class RaceService {
     @Autowired
     private ModelMapper modelMapper;
 
+    private final RabbitTemplate rabbitTemplate;
     private final CarServiceClient carServiceClient;
 
     @Autowired
-    public RaceService(CarServiceClient carServiceClient) {
+    public RaceService(RabbitTemplate rabbitTemplate, CarServiceClient carServiceClient) {
+        this.rabbitTemplate = rabbitTemplate;
         this.carServiceClient = carServiceClient;
     }
 
@@ -75,30 +79,6 @@ public class RaceService {
             return null;
         }
         return modelMapper.map(race, RaceDtoResponse.class);
-    }
-
-    public RaceInfoDto updateRace(String id, RaceDtoRequest raceDtoRequest) {
-        Race race = raceRepository.findById(id).orElse(null);
-        if (race == null) {
-            return null;
-        }
-
-        if ("finished".equals(race.getStatus())) {
-            return null;
-        }
-
-        race.setName(raceDtoRequest.getName());
-        race.setCountry(raceDtoRequest.getCountry());
-        race.setDate(raceDtoRequest.getDate());
-
-        Race updatedRace = raceRepository.save(race);
-
-        return modelMapper.map(updatedRace, RaceInfoDto.class);
-    }
-
-    public String deleteRace (String id){
-        raceRepository.deleteById(id);
-        return "Race deleted.";
     }
 
     public RaceDtoResponse overtake(String raceId, String carId) {
@@ -154,15 +134,20 @@ public class RaceService {
         race.setStatus("finished");
         Race finishedRace = raceRepository.save(race);
 
+        String raceJson = convertRaceToJson(finishedRace);
+        rabbitTemplate.convertAndSend("race-result-queue", raceJson);
+
         return modelMapper.map(finishedRace, RaceDtoResponse.class);
     }
 
-    public List<CarDtoResponse> getRaceResult(String raceId) {
-        Race race = raceRepository.findById(raceId).orElse(null);
-        if (race == null || race.getCars() == null) {
+    public String convertRaceToJson(Race race) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.writeValueAsString(race);
+        } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
-        return race.getCars();
     }
 
 }

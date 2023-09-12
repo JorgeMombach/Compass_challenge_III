@@ -41,26 +41,6 @@ public class RaceController {
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<RaceInfoDto> updateRace(@PathVariable String id, @Valid @RequestBody RaceDtoRequest raceDtoRequest) {
-        RaceInfoDto updatedRace = raceService.updateRace(id, raceDtoRequest);
-        if (updatedRace != null) {
-            return ResponseEntity.ok(updatedRace);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteRace(@PathVariable String id) {
-        String result = raceService.deleteRace(id);
-        if (result.equals("Race deleted.")) {
-            return ResponseEntity.ok(result);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
     @PutMapping("/{raceId}/overtake/{carId}")
     public ResponseEntity<RaceDtoResponse> overtake(@PathVariable String raceId, @PathVariable String carId) {
         RaceDtoResponse updatedRace = raceService.overtake(raceId, carId);
@@ -81,14 +61,6 @@ public class RaceController {
         }
     }
 
-    @GetMapping("/{raceId}/result")
-    public ResponseEntity<List<CarDtoResponse>> getRaceResult(@PathVariable String raceId) {
-        List<CarDtoResponse> raceResult = raceService.getRaceResult(raceId);
-        if (raceResult != null) {
-            return ResponseEntity.ok(raceResult);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+
 
 }
