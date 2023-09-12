@@ -32,18 +32,15 @@ class CarControllerTest {
 
     @Test
     public void testGetCarById_ValidId() throws Exception {
-        // Crie um objeto de carro de exemplo com um ID válido
         String validId = "1";
         CarDtoResponse carDtoResponse = new CarDtoResponse();
         carDtoResponse.setId(validId);
         carDtoResponse.setBrand("Brand1");
         carDtoResponse.setModel("Model1");
-        carDtoResponse.setYear(new Date()); // Defina a data correta aqui
+        carDtoResponse.setYear(new Date());
 
-        // Simule o serviço retornando um carro com o ID válido
         Mockito.when(carService.getCarById(validId)).thenReturn(carDtoResponse);
 
-        // Execute a solicitação GET para /cars/{validId} e verifique a resposta
         mockMvc.perform(MockMvcRequestBuilders.get("/api/car/{id}", validId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -55,11 +52,9 @@ class CarControllerTest {
 
     @Test
     public void testGetCarById_InvalidId() throws Exception {
-        // Simule o serviço retornando null para um ID inválido
-        String invalidId = "999"; // Suponha que este ID seja inválido
+        String invalidId = "999";
         Mockito.when(carService.getCarById(invalidId)).thenReturn(null);
 
-        // Execute a solicitação GET para /cars/{invalidId} e verifique se retorna 404 Not Found
         mockMvc.perform(MockMvcRequestBuilders.get("/api/car/{id}", invalidId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
@@ -67,13 +62,10 @@ class CarControllerTest {
 
     @Test
     public void testDeleteCar_InvalidId() throws Exception {
-        // Defina um ID inválido para exclusão
-        String invalidId = "999"; // Suponha que este ID seja inválido
+        String invalidId = "999";
 
-        // Simule o serviço retornando uma mensagem diferente de "Car deleted." para um ID inválido
-        Mockito.when(carService.deleteCar(invalidId)).thenReturn("Car not found."); // Por exemplo, "Car not found."
+        Mockito.when(carService.deleteCar(invalidId)).thenReturn("Car not found.");
 
-        // Execute a solicitação DELETE para /api/car/{invalidId} e verifique a resposta
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/car/{id}", invalidId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());

@@ -42,7 +42,6 @@ class CarServiceTest {
 
     @Test
     public void testIsDuplicatePilot() {
-        // Simulando que já existe um piloto com o mesmo nome e idade no repositório
         when(carRepository.existsByPilotNameAndPilotAge(anyString(), anyInt())).thenReturn(true);
 
         boolean result = carService.isDuplicatePilot("PilotName", 30);
@@ -52,7 +51,6 @@ class CarServiceTest {
 
     @Test
     public void testIsNotDuplicatePilot() {
-        // Simulando que não existe um piloto com o mesmo nome e idade no repositório
         when(carRepository.existsByPilotNameAndPilotAge(anyString(), anyInt())).thenReturn(false);
 
         boolean result = carService.isDuplicatePilot("PilotName", 30);
@@ -66,7 +64,6 @@ class CarServiceTest {
         carDtoRequest.setBrand("Brand");
         carDtoRequest.setModel("Model");
 
-        // Defina o ano como um objeto Date com o formato correto
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
         try {
             Date year = sdf.parse("2023");
@@ -75,7 +72,6 @@ class CarServiceTest {
             e.printStackTrace();
         }
 
-        // Simulando que já existe um carro com a mesma marca, modelo e ano no repositório
         when(carRepository.existsByBrandAndModelAndYear("Brand", "Model", carDtoRequest.getYear())).thenReturn(true);
 
         boolean result = carService.isDuplicateCar(carDtoRequest);
@@ -89,7 +85,6 @@ class CarServiceTest {
         carDtoRequest.setBrand("Brand");
         carDtoRequest.setModel("Model");
 
-        // Defina o ano como um objeto Date com o formato correto
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
         try {
             Date year = sdf.parse("2023");
@@ -98,7 +93,6 @@ class CarServiceTest {
             e.printStackTrace();
         }
 
-        // Simulando que não existe um carro com a mesma marca, modelo e ano no repositório
         when(carRepository.existsByBrandAndModelAndYear("Brand", "Model", carDtoRequest.getYear())).thenReturn(false);
 
         boolean result = carService.isDuplicateCar(carDtoRequest);
@@ -159,16 +153,12 @@ class CarServiceTest {
 
     @Test
     public void testDeleteCar() {
-        // Crie um ID de exemplo para deletar
         String carId = "1";
 
-        // Chame o método deleteCar
         String result = carService.deleteCar(carId);
 
-        // Verifique se o método deleteById do repositório foi chamado com o ID correto
         verify(carRepository).deleteById(carId);
 
-        // Verifique se a mensagem de retorno é a esperada
         assertEquals("Car deleted.", result);
     }
 }
