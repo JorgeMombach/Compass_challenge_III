@@ -1,6 +1,7 @@
 package jorge.mombach.mshistory.service;
 
 import jorge.mombach.mshistory.entity.RaceResult;
+import jorge.mombach.mshistory.payload.RaceDto;
 import jorge.mombach.mshistory.payload.RaceResultDto;
 import jorge.mombach.mshistory.repository.RaceResultRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,7 +59,7 @@ class RaceResultConsumerTest {
 
         when(raceResultRepository.findAll()).thenReturn(List.of(raceResult1, raceResult2));
 
-        List<RaceResultDto> raceResults = raceResultConsumer.getAllRaces();
+        List<RaceDto> raceResults = raceResultConsumer.getAllRaces();
 
         assertNotNull(raceResults);
         assertFalse(raceResults.isEmpty());
@@ -66,7 +67,6 @@ class RaceResultConsumerTest {
 
         verify(raceResultRepository, times(1)).findAll();
     }
-
 
     @Test
     public void testGetRaceById() {

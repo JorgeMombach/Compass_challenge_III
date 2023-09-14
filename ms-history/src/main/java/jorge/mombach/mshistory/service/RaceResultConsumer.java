@@ -2,6 +2,7 @@ package jorge.mombach.mshistory.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jorge.mombach.mshistory.entity.RaceResult;
+import jorge.mombach.mshistory.payload.RaceDto;
 import jorge.mombach.mshistory.payload.RaceResultDto;
 import jorge.mombach.mshistory.repository.RaceResultRepository;
 import org.modelmapper.ModelMapper;
@@ -38,10 +39,10 @@ public class RaceResultConsumer {
         }
     }
 
-    public List<RaceResultDto> getAllRaces(){
+    public List<RaceDto> getAllRaces(){
         List<RaceResult> races = raceResultRepository.findAll();
         return races.stream()
-                .map(car -> modelMapper.map(car, RaceResultDto.class))
+                .map(car -> modelMapper.map(car, RaceDto.class))
                 .collect(Collectors.toList());
     }
 
