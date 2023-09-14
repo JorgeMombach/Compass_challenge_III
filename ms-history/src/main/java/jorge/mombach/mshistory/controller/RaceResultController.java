@@ -1,5 +1,6 @@
 package jorge.mombach.mshistory.controller;
 
+import jorge.mombach.mshistory.payload.RaceDto;
 import jorge.mombach.mshistory.payload.RaceResultDto;
 import jorge.mombach.mshistory.service.RaceResultConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class RaceResultController {
     RaceResultConsumer raceResultConsumer;
 
     @GetMapping
-    public List<RaceResultDto> getAllRaces(){
+    public List<RaceDto> getAllRaces(){
         return raceResultConsumer.getAllRaces();
     }
 

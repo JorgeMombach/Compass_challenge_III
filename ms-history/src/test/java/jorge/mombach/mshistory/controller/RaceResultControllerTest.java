@@ -1,5 +1,6 @@
 package jorge.mombach.mshistory.controller;
 
+import jorge.mombach.mshistory.payload.RaceDto;
 import jorge.mombach.mshistory.payload.RaceResultDto;
 import jorge.mombach.mshistory.service.RaceResultConsumer;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,24 +42,22 @@ class RaceResultControllerTest {
 
     @Test
     public void testGetAllRaces() throws Exception {
-        List<RaceResultDto> raceResults = new ArrayList<>();
+        List<RaceDto> raceResults = new ArrayList<>();
 
-        RaceResultDto raceResult1 = new RaceResultDto();
+        RaceDto raceResult1 = new RaceDto();
         raceResult1.setId("1");
         raceResult1.setName("Race 1");
         raceResult1.setCountry("Country 1");
         raceResult1.setDate(new Date());
         raceResult1.setStatus("finished");
-        raceResult1.setCars(new ArrayList<>());
         raceResult1.setDateOfInsertion(new Date());
 
-        RaceResultDto raceResult2 = new RaceResultDto();
+        RaceDto raceResult2 = new RaceDto();
         raceResult2.setId("2");
         raceResult2.setName("Race 2");
         raceResult2.setCountry("Country 2");
         raceResult2.setDate(new Date());
         raceResult2.setStatus("started");
-        raceResult2.setCars(new ArrayList<>());
         raceResult2.setDateOfInsertion(new Date());
 
         raceResults.add(raceResult1);
@@ -74,7 +73,6 @@ class RaceResultControllerTest {
 
         verify(raceResultConsumer, times(1)).getAllRaces();
     }
-
 
     @Test
     public void testGetRaceById() throws Exception {
